@@ -32,11 +32,15 @@ if (count == null) {
     localStorage.setItem('count', '1');
 }
 
-let activeTouches = 0;
+// To handle animations smoothly and avoid multiple simultaneous animations
+let isAnimating = false;
 
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    activeTouches = e.touches.length;
+
+    if (isAnimating) return; // Prevent overlapping animations
+
+    isAnimating = true;
 
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i];
@@ -49,7 +53,7 @@ image.addEventListener('touchstart', (e) => {
         let translateY = 0;
         let skewX = 0;
         let skewY = 0;
-        let scale = 1.05;
+        let scale = 1.1;
 
         if (x < width / 2 && y < height / 2) {
             translateX = -0.1;
@@ -72,7 +76,7 @@ image.addEventListener('touchstart', (e) => {
             skewY = 5;
             skewX = -3;
         } else {
-            scale = 1.1; // Slightly larger scale for clicks near the center
+            scale = 1.15; // Slightly larger scale for clicks near the center
         }
 
         image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
@@ -92,11 +96,11 @@ image.addEventListener('touchstart', (e) => {
             body.querySelector('#power').textContent = `${Number(power) - 1}`;
         }
     }
-});
 
-image.addEventListener('touchend', () => {
-    // Reset the image transformation after touch ends
-    image.style.transform = 'translate(0px, 0px) scale(1)';
+    setTimeout(() => {
+        image.style.transform = 'translate(0px, 0px) scale(1)';
+        isAnimating = false; // Allow next animation
+    }, 100);
 });
 
 setInterval(() => {
