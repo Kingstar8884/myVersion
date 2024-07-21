@@ -6,6 +6,7 @@ let coins = localStorage.getItem('coins');
 let total = localStorage.getItem('total');
 let power = localStorage.getItem('power');
 let count = localStorage.getItem('count');
+let lastRefillTime = localStorage.getItem('lastRefillTime');
 
 if (coins == null) {
     localStorage.setItem('coins', '0');
@@ -32,43 +33,25 @@ if (count == null) {
     localStorage.setItem('count', '1');
 }
 
-// Function to handle the animation
-function animateImage(x, y, width, height) {
-    let translateX = 0;
-    let translateY = 0;
-    let skewX = 0;
-    let skewY = 0;
-    let scale = 1.02; // Further reduced scale for more subtle effect
+if (lastRefillTime == null) {
+    localStorage.setItem('lastRefillTime', Date.now().toString());
+}
 
-    if (x < width / 2 && y < height / 2) {
-        translateX = -0.1; // Further reduced translation
-        translateY = -0.1; // Further reduced translation
-        skewY = -3; // Reduced skew
-        skewX = 1; // Reduced skew
-    } else if (x < width / 2 && y > height / 2) {
-        translateX = -0.1; // Further reduced translation
-        translateY = 0.1; // Further reduced translation
-        skewY = -3; // Reduced skew
-        skewX = 1; // Reduced skew
-    } else if (x > width / 2 && y > height / 2) {
-        translateX = 0.1; // Further reduced translation
-        translateY = 0.1; // Further reduced translation
-        skewY = 3; // Reduced skew
-        skewX = -1; // Reduced skew
-    } else if (x > width / 2 && y < height / 2) {
-        translateX = 0.1; // Further reduced translation
-        translateY = -0.1; // Further reduced translation
-        skewY = 3; // Reduced skew
-        skewX = -1; // Reduced skew
-    } else {
-        scale = 1.05; // Slightly larger scale for clicks near the center
+function refillPower() {
+    const now = Date.now();
+    const lastRefill = Number(localStorage.getItem('lastRefillTime'));
+    const elapsedSeconds = (now - lastRefill) / 1000;
+    const powerToAdd = Math.floor(elapsedSeconds * Number(count));
+
+    power = Number(localStorage.getItem('power')) + powerToAdd;
+    if (power > total) {
+        power = total;
     }
 
-    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
-    
-    setTimeout(() => {
-        image.style.transform = 'translate(0px, 0px) scale(1)';
-    }, 100);
+    localStorage.setItem('power', power.toString());
+    localStorage.setItem('lastRefillTime', now.toString());
+    body.querySelector('#power').textContent = power.toString();
+    body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 }
 
 image.addEventListener('touchstart', (e) => {
@@ -106,12 +89,49 @@ image.addEventListener('touchstart', (e) => {
     }
 });
 
-setInterval(() => {
-    count = localStorage.getItem('count');
-    power = localStorage.getItem('power');
-    if (Number(total) > power) {
-        localStorage.setItem('power', `${Number(power) + Number(count)}`);
-        body.querySelector('#power').textContent = `${Number(power) + Number(count)}`;
-        body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
+function animateImage(x, y, width, height) {
+    let translateX = 0;
+    let translateY = 0;
+    let skewX = 0;
+    let skewY = 0;
+    let scale = 1.02; // Further reduced scale for more subtle effect
+
+    if (x < width / 2 && y < height / 2) {
+        translateX = -0.1; // Further reduced translation
+        translateY = -0.1; // Further reduced translation
+        skewY = -3; // Reduced skew
+        skewX = 1; // Reduced skew
+    } else if (x < width / 2 && y > height / 2) {
+        translateX = -0.1; // Further reduced translation
+        translateY = 0.1; // Further reduced translation
+        skewY = -3; // Reduced skew
+        skewX = 1; // Reduced skew
+    } else if (x > width / 2 && y > height / 2) {
+        translateX = 0.1; // Further reduced translation
+        translateY = 0.1; // Further reduced translation
+        skewY = 3; // Reduced skew
+        skewX = -1; // Reduced skew
+    } else if (x > width / 2 && y < height / 2) {
+        translateX = 0.1; // Further reduced translation
+        translateY = -0.1; // Further reduced translation
+        skewY = 3; // Reduced skew
+        skewX = -1; // Reduced skew
+    } else {
+        scale = 1.05; // Slightly larger scale for clicks near the center
     }
-}, 1000);
+
+    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
+
+    setTimeout(() => {
+        image.style.transform = 'translate(0px, 0px) scale(1)';
+    }, 100);
+}
+
+setInterval(refillPower, 1000);
+
+// Refill power when the page becomes visible again
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        refillPower();
+    }
+});
