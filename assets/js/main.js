@@ -36,14 +36,13 @@ if(count == null){
 
 image.addEventListener('click' , (e)=> {
 
-alert("Clicked");
     let x = e.offsetX;
     let y = e.offsetY;
 
 
-    //if (navigator.vibrate) {
-      //navigator.vibrate(5);
-    //}
+    if (navigator.vibrate) {
+        alert("Clicked");
+    }
 
     coins = localStorage.getItem('coins');
     power = localStorage.getItem('power');
