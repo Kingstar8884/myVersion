@@ -49,30 +49,30 @@ image.addEventListener('touchstart', (e) => {
         let translateY = 0;
         let skewX = 0;
         let skewY = 0;
-        let scale = 1.1;
+        let scale = 1.05;
 
         if (x < width / 2 && y < height / 2) {
-            translateX = -0.25;
-            translateY = -0.25;
-            skewY = -10;
-            skewX = 5;
+            translateX = -0.1;
+            translateY = -0.1;
+            skewY = -5;
+            skewX = 3;
         } else if (x < width / 2 && y > height / 2) {
-            translateX = -0.25;
-            translateY = 0.25;
-            skewY = -10;
-            skewX = 5;
+            translateX = -0.1;
+            translateY = 0.1;
+            skewY = -5;
+            skewX = 3;
         } else if (x > width / 2 && y > height / 2) {
-            translateX = 0.25;
-            translateY = 0.25;
-            skewY = 10;
-            skewX = -5;
+            translateX = 0.1;
+            translateY = 0.1;
+            skewY = 5;
+            skewX = -3;
         } else if (x > width / 2 && y < height / 2) {
-            translateX = 0.25;
-            translateY = -0.25;
-            skewY = 10;
-            skewX = -5;
+            translateX = 0.1;
+            translateY = -0.1;
+            skewY = 5;
+            skewX = -3;
         } else {
-            scale = 1.2; // Slightly larger scale for clicks near the center
+            scale = 1.1; // Slightly larger scale for clicks near the center
         }
 
         image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
