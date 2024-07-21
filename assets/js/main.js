@@ -46,7 +46,7 @@ function showAddedCount(x, y, amount) {
     // Animate the element
     setTimeout(() => {
         indicator.style.opacity = '0';
-        indicator.style.transform = 'translateY(-80px)';
+        indicator.style.transform = 'translateY(-100px)';
     }, 0);
 
     // Remove the element after animation
