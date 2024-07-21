@@ -36,27 +36,7 @@ if(count == null){
 
 
 
-        // Prevent pinch-to-zoom
-        document.addEventListener('gesturestart', function (e) {
-            e.preventDefault();
-        });
-
-        // Prevent double-tap zoom
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (e) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Prevent scale changes
-        document.addEventListener('touchmove', function (e) {
-            if (e.scale !== 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+/*
 
 image.addEventListener('click' , (e)=> {
 
@@ -138,7 +118,7 @@ image.addEventListener('click' , (e)=> {
     setTimeout(()=>{
         image.style.transform = 'translate(0px, 0px)';
     }, 100);
-*/
+
     body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 });
 
@@ -151,3 +131,73 @@ setInterval(()=> {
         body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
     }
 }, 1000);
+*/
+
+
+
+let activeTouches = 0;
+
+image.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    activeTouches = e.touches.length;
+
+    for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const x = touch.pageX - image.getBoundingClientRect().left;
+        const y = touch.pageY - image.getBoundingClientRect().top;
+        const width = image.offsetWidth;
+        const height = image.offsetHeight;
+
+        let translateX = 0;
+        let translateY = 0;
+        let skewX = 0;
+        let skewY = 0;
+        let scale = 1.1;
+
+        if (x < width / 2 && y < height / 2) {
+            translateX = -0.25;
+            translateY = -0.25;
+            skewY = -10;
+            skewX = 5;
+        } else if (x < width / 2 && y > height / 2) {
+            translateX = -0.25;
+            translateY = 0.25;
+            skewY = -10;
+            skewX = 5;
+        } else if (x > width / 2 && y > height / 2) {
+            translateX = 0.25;
+            translateY = 0.25;
+            skewY = 10;
+            skewX = -5;
+        } else if (x > width / 2 && y < height / 2) {
+            translateX = 0.25;
+            translateY = -0.25;
+            skewY = 10;
+            skewX = -5;
+        }
+
+        image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
+    }
+
+    // Apply vibration if available
+    if (navigator.vibrate) {
+        navigator.vibrate(5);
+    }
+
+    // Update coin count and power
+    coins = localStorage.getItem('coins');
+    power = localStorage.getItem('power');
+
+    if (Number(power) > 0) {
+        localStorage.setItem('coins', `${Number(coins) + activeTouches}`);
+        h1.textContent = `${(Number(coins) + activeTouches).toLocaleString()}`;
+
+        localStorage.setItem('power', `${Number(power) - activeTouches}`);
+        document.querySelector('#power').textContent = `${Number(power) - activeTouches}`;
+    }
+});
+
+image.addEventListener('touchend', () => {
+    // Reset the image transformation after touch ends
+    image.style.transform = 'translate(0px, 0px) scale(1)';
+});
