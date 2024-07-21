@@ -38,6 +38,11 @@ let isAnimating = false;
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
 
+    coins = localStorage.getItem('coins');
+    power = localStorage.getItem('power');
+
+    if (Number(power) <= 0) return; // Prevent action if power is 0 or less
+
     if (isAnimating) return; // Prevent overlapping animations
 
     isAnimating = true;
@@ -53,30 +58,30 @@ image.addEventListener('touchstart', (e) => {
         let translateY = 0;
         let skewX = 0;
         let skewY = 0;
-        let scale = 1.1;
+        let scale = 1.05; // Reduced scale for subtler effect
 
         if (x < width / 2 && y < height / 2) {
-            translateX = -0.1;
-            translateY = -0.1;
-            skewY = -5;
-            skewX = 3;
+            translateX = -0.05; // Reduced translation
+            translateY = -0.05; // Reduced translation
+            skewY = -3; // Reduced skew
+            skewX = 2; // Reduced skew
         } else if (x < width / 2 && y > height / 2) {
-            translateX = -0.1;
-            translateY = 0.1;
-            skewY = -5;
-            skewX = 3;
+            translateX = -0.05; // Reduced translation
+            translateY = 0.05; // Reduced translation
+            skewY = -3; // Reduced skew
+            skewX = 2; // Reduced skew
         } else if (x > width / 2 && y > height / 2) {
-            translateX = 0.1;
-            translateY = 0.1;
-            skewY = 5;
-            skewX = -3;
+            translateX = 0.05; // Reduced translation
+            translateY = 0.05; // Reduced translation
+            skewY = 3; // Reduced skew
+            skewX = -2; // Reduced skew
         } else if (x > width / 2 && y < height / 2) {
-            translateX = 0.1;
-            translateY = -0.1;
-            skewY = 5;
-            skewX = -3;
+            translateX = 0.05; // Reduced translation
+            translateY = -0.05; // Reduced translation
+            skewY = 3; // Reduced skew
+            skewX = -2; // Reduced skew
         } else {
-            scale = 1.15; // Slightly larger scale for clicks near the center
+            scale = 1.1; // Slightly larger scale for clicks near the center
         }
 
         image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
@@ -85,9 +90,7 @@ image.addEventListener('touchstart', (e) => {
             navigator.vibrate(200);
         }
 
-        coins = localStorage.getItem('coins');
-        power = localStorage.getItem('power');
-
+        // Update coins and power only if power is greater than 0
         if (Number(power) > 0) {
             localStorage.setItem('coins', `${Number(coins) + 1}`);
             h1.textContent = `${(Number(coins) + 1).toLocaleString()}`;
