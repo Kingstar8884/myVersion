@@ -2,51 +2,24 @@ const body = document.body;
 const image = body.querySelector('#coin');
 const h1 = body.querySelector('h1');
 
-let coins = localStorage.getItem('coins');
-let total = localStorage.getItem('total');
-let power = localStorage.getItem('power');
-let count = localStorage.getItem('count');
-let lastRefillTime = localStorage.getItem('lastRefillTime');
+let coins = Number(localStorage.getItem('coins')) || 0;
+let total = Number(localStorage.getItem('total')) || 500;
+let power = Number(localStorage.getItem('power')) || 500;
+let count = Number(localStorage.getItem('count')) || 1;
+let lastRefillTime = Number(localStorage.getItem('lastRefillTime')) || Date.now();
 
-if (coins == null) {
-    localStorage.setItem('coins', '0');
-    h1.textContent = '0';
-} else {
-    h1.textContent = Number(coins).toLocaleString();
-}
-
-if (total == null) {
-    localStorage.setItem('total', '500');
-    body.querySelector('#total').textContent = '/500';
-} else {
-    body.querySelector('#total').textContent = `/${total}`;
-}
-
-if (power == null) {
-    localStorage.setItem('power', '500');
-    body.querySelector('#power').textContent = '500';
-} else {
-    body.querySelector('#power').textContent = power;
-}
-
-if (count == null) {
-    localStorage.setItem('count', '1');
-}
-
-if (lastRefillTime == null) {
-    localStorage.setItem('lastRefillTime', Date.now().toString());
-}
+h1.textContent = coins.toLocaleString();
+body.querySelector('#total').textContent = `/${total}`;
+body.querySelector('#power').textContent = power.toString();
+body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 
 function refillPower() {
     const now = Date.now();
-    const lastRefill = Number(localStorage.getItem('lastRefillTime'));
-    const elapsedSeconds = (now - lastRefill) / 1000;
-    const powerToAdd = Math.floor(elapsedSeconds * Number(count));
+    const elapsedSeconds = (now - lastRefillTime) / 1000;
+    const powerToAdd = Math.floor(elapsedSeconds * count);
 
-    power = Number(localStorage.getItem('power')) + powerToAdd;
-    if (power > total) {
-        power = total;
-    }
+    power = Math.min(total, power + powerToAdd);
+    lastRefillTime = now;
 
     localStorage.setItem('power', power.toString());
     localStorage.setItem('lastRefillTime', now.toString());
@@ -57,9 +30,6 @@ function refillPower() {
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
 
-    coins = Number(localStorage.getItem('coins'));
-    power = Number(localStorage.getItem('power'));
-
     if (power <= 0) return; // Prevent action if power is 0 or less
 
     if (navigator.vibrate) {
@@ -69,12 +39,18 @@ image.addEventListener('touchstart', (e) => {
     const touches = e.touches.length;
     const availablePower = Math.min(touches, power);
 
-    // Update coins and power based on the number of touches and available power
-    localStorage.setItem('coins', `${coins + availablePower}`);
-    h1.textContent = `${(coins + availablePower).toLocaleString()}`;
+    // Update in-memory variables
+    coins += availablePower;
+    power -= availablePower;
 
-    localStorage.setItem('power', `${power - availablePower}`);
-    body.querySelector('#power').textContent = `${power - availablePower}`;
+    // Reflect changes on the UI
+    h1.textContent = coins.toLocaleString();
+    body.querySelector('#power').textContent = power.toString();
+    body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
+
+    // Batch localStorage updates
+    localStorage.setItem('coins', coins.toString());
+    localStorage.setItem('power', power.toString());
 
     for (let i = 0; i < availablePower; i++) {
         const touch = e.touches[i];
@@ -88,8 +64,6 @@ image.addEventListener('touchstart', (e) => {
             animateImage(x, y, width, height);
         }, i * 50);
     }
-
-    body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 });
 
 function animateImage(x, y, width, height) {
