@@ -55,7 +55,8 @@ image.addEventListener('click' , (e)=> {
         body.querySelector('#power').textContent = `${Number(power) - 1}`;
     } 
     //
-    let x = e.offsetX;
+    
+        let x = e.offsetX;
     let y = e.offsetY;
     let width = image.offsetWidth;
     let height = image.offsetHeight;
@@ -64,8 +65,8 @@ image.addEventListener('click' , (e)=> {
     let translateY = 0;
     let skewX = 0;
     let skewY = 0;
+    let scale = 1.1;
 
-    // Determine the transformation based on the click position
     if (x < width / 2 && y < height / 2) {
         translateX = -0.25;
         translateY = -0.25;
@@ -86,10 +87,12 @@ image.addEventListener('click' , (e)=> {
         translateY = -0.25;
         skewY = 10;
         skewX = -5;
+    } else {
+        scale = 1.2; // Slightly larger scale for clicks near the center
     }
 
-    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg)`;
-/*
+    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
+    /*
     if(x < 150 & y < 150){
         image.style.transform = 'translate(-0.25rem, -0.25rem) skewY(-10deg) skewX(5deg)';
     }
