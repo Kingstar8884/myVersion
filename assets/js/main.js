@@ -57,25 +57,26 @@ function refillPower() {
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
 
-    coins = localStorage.getItem('coins');
-    power = localStorage.getItem('power');
+    coins = Number(localStorage.getItem('coins'));
+    power = Number(localStorage.getItem('power'));
 
-    if (Number(power) <= 0) return; // Prevent action if power is 0 or less
+    if (power <= 0) return; // Prevent action if power is 0 or less
 
     if (navigator.vibrate) {
         navigator.vibrate(200);
     }
 
-    // Update coins and power only if power is greater than 0
-    if (Number(power) > 0) {
-        localStorage.setItem('coins', `${Number(coins) + 1}`);
-        h1.textContent = `${(Number(coins) + 1).toLocaleString()}`;
+    const touches = e.touches.length;
+    const availablePower = Math.min(touches, power);
 
-        localStorage.setItem('power', `${Number(power) - 1}`);
-        body.querySelector('#power').textContent = `${Number(power) - 1}`;
-    }
+    // Update coins and power based on the number of touches and available power
+    localStorage.setItem('coins', `${coins + availablePower}`);
+    h1.textContent = `${(coins + availablePower).toLocaleString()}`;
 
-    for (let i = 0; i < e.touches.length; i++) {
+    localStorage.setItem('power', `${power - availablePower}`);
+    body.querySelector('#power').textContent = `${power - availablePower}`;
+
+    for (let i = 0; i < availablePower; i++) {
         const touch = e.touches[i];
         const x = touch.pageX - image.getBoundingClientRect().left;
         const y = touch.pageY - image.getBoundingClientRect().top;
@@ -87,6 +88,8 @@ image.addEventListener('touchstart', (e) => {
             animateImage(x, y, width, height);
         }, i * 50);
     }
+
+    body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 });
 
 function animateImage(x, y, width, height) {
