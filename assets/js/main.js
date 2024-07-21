@@ -27,6 +27,34 @@ function refillPower() {
     body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 }
 
+function showAddedCount(x, y, amount) {
+    const indicator = document.createElement('div');
+    indicator.textContent = `+${amount}`;
+    indicator.style.position = 'absolute';
+    indicator.style.left = `${x}px`;
+    indicator.style.top = `${y}px`;
+    indicator.style.fontSize = '1rem';
+    indicator.style.color = 'green';
+    indicator.style.fontWeight = 'bold';
+    indicator.style.pointerEvents = 'none';
+    indicator.style.opacity = '1';
+    indicator.style.transition = 'opacity 0.5s, transform 0.5s';
+    indicator.style.transform = 'translateY(0)';
+
+    body.appendChild(indicator);
+
+    // Animate the element
+    setTimeout(() => {
+        indicator.style.opacity = '0';
+        indicator.style.transform = 'translateY(-20px)';
+    }, 0);
+
+    // Remove the element after animation
+    setTimeout(() => {
+        indicator.remove();
+    }, 500);
+}
+
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
 
@@ -52,6 +80,7 @@ image.addEventListener('touchstart', (e) => {
     localStorage.setItem('coins', coins.toString());
     localStorage.setItem('power', power.toString());
 
+    // Show indicators for each touch
     for (let i = 0; i < availablePower; i++) {
         const touch = e.touches[i];
         const x = touch.pageX - image.getBoundingClientRect().left;
@@ -62,6 +91,7 @@ image.addEventListener('touchstart', (e) => {
         // Delay each touch animation slightly to manage multiple animations smoothly
         setTimeout(() => {
             animateImage(x, y, width, height);
+            showAddedCount(touch.pageX, touch.pageY, 1); // Show +1 for each touch
         }, i * 50);
     }
 });
