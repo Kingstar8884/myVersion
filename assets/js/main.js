@@ -36,6 +36,7 @@ if(count == null){
 
 image.addEventListener('click' , (e)=> {
 
+alert("Clicked");
     let x = e.offsetX;
     let y = e.offsetY;
 
