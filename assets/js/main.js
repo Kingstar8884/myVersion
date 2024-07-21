@@ -32,8 +32,44 @@ if (count == null) {
     localStorage.setItem('count', '1');
 }
 
-// To handle animations smoothly and avoid multiple simultaneous animations
-let isAnimating = false;
+// Function to handle the animation
+function animateImage(x, y, width, height) {
+    let translateX = 0;
+    let translateY = 0;
+    let skewX = 0;
+    let skewY = 0;
+    let scale = 1.05; // Reduced scale for subtler effect
+
+    if (x < width / 2 && y < height / 2) {
+        translateX = -0.05; // Reduced translation
+        translateY = -0.05; // Reduced translation
+        skewY = -3; // Reduced skew
+        skewX = 2; // Reduced skew
+    } else if (x < width / 2 && y > height / 2) {
+        translateX = -0.05; // Reduced translation
+        translateY = 0.05; // Reduced translation
+        skewY = -3; // Reduced skew
+        skewX = 2; // Reduced skew
+    } else if (x > width / 2 && y > height / 2) {
+        translateX = 0.05; // Reduced translation
+        translateY = 0.05; // Reduced translation
+        skewY = 3; // Reduced skew
+        skewX = -2; // Reduced skew
+    } else if (x > width / 2 && y < height / 2) {
+        translateX = 0.05; // Reduced translation
+        translateY = -0.05; // Reduced translation
+        skewY = 3; // Reduced skew
+        skewX = -2; // Reduced skew
+    } else {
+        scale = 1.1; // Slightly larger scale for clicks near the center
+    }
+
+    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
+    
+    setTimeout(() => {
+        image.style.transform = 'translate(0px, 0px) scale(1)';
+    }, 100);
+}
 
 image.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -43,9 +79,18 @@ image.addEventListener('touchstart', (e) => {
 
     if (Number(power) <= 0) return; // Prevent action if power is 0 or less
 
-    if (isAnimating) return; // Prevent overlapping animations
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
+    }
 
-    isAnimating = true;
+    // Update coins and power only if power is greater than 0
+    if (Number(power) > 0) {
+        localStorage.setItem('coins', `${Number(coins) + 1}`);
+        h1.textContent = `${(Number(coins) + 1).toLocaleString()}`;
+
+        localStorage.setItem('power', `${Number(power) - 1}`);
+        body.querySelector('#power').textContent = `${Number(power) - 1}`;
+    }
 
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i];
@@ -54,56 +99,11 @@ image.addEventListener('touchstart', (e) => {
         const width = image.offsetWidth;
         const height = image.offsetHeight;
 
-        let translateX = 0;
-        let translateY = 0;
-        let skewX = 0;
-        let skewY = 0;
-        let scale = 1.05; // Reduced scale for subtler effect
-
-        if (x < width / 2 && y < height / 2) {
-            translateX = -0.05; // Reduced translation
-            translateY = -0.05; // Reduced translation
-            skewY = -3; // Reduced skew
-            skewX = 2; // Reduced skew
-        } else if (x < width / 2 && y > height / 2) {
-            translateX = -0.05; // Reduced translation
-            translateY = 0.05; // Reduced translation
-            skewY = -3; // Reduced skew
-            skewX = 2; // Reduced skew
-        } else if (x > width / 2 && y > height / 2) {
-            translateX = 0.05; // Reduced translation
-            translateY = 0.05; // Reduced translation
-            skewY = 3; // Reduced skew
-            skewX = -2; // Reduced skew
-        } else if (x > width / 2 && y < height / 2) {
-            translateX = 0.05; // Reduced translation
-            translateY = -0.05; // Reduced translation
-            skewY = 3; // Reduced skew
-            skewX = -2; // Reduced skew
-        } else {
-            scale = 1.1; // Slightly larger scale for clicks near the center
-        }
-
-        image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
-
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-
-        // Update coins and power only if power is greater than 0
-        if (Number(power) > 0) {
-            localStorage.setItem('coins', `${Number(coins) + 1}`);
-            h1.textContent = `${(Number(coins) + 1).toLocaleString()}`;
-
-            localStorage.setItem('power', `${Number(power) - 1}`);
-            body.querySelector('#power').textContent = `${Number(power) - 1}`;
-        }
+        // Delay each touch animation slightly to manage multiple animations smoothly
+        setTimeout(() => {
+            animateImage(x, y, width, height);
+        }, i * 50);
     }
-
-    setTimeout(() => {
-        image.style.transform = 'translate(0px, 0px) scale(1)';
-        isAnimating = false; // Allow next animation
-    }, 100);
 });
 
 setInterval(() => {
