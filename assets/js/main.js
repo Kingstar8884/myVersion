@@ -38,30 +38,30 @@ function animateImage(x, y, width, height) {
     let translateY = 0;
     let skewX = 0;
     let skewY = 0;
-    let scale = 1.05; // Reduced scale for subtler effect
+    let scale = 1.02; // Further reduced scale for more subtle effect
 
     if (x < width / 2 && y < height / 2) {
-        translateX = -0.05; // Reduced translation
-        translateY = -0.05; // Reduced translation
+        translateX = -0.1; // Further reduced translation
+        translateY = -0.1; // Further reduced translation
         skewY = -3; // Reduced skew
-        skewX = 2; // Reduced skew
+        skewX = 1; // Reduced skew
     } else if (x < width / 2 && y > height / 2) {
-        translateX = -0.05; // Reduced translation
-        translateY = 0.05; // Reduced translation
+        translateX = -0.1; // Further reduced translation
+        translateY = 0.1; // Further reduced translation
         skewY = -3; // Reduced skew
-        skewX = 2; // Reduced skew
+        skewX = 1; // Reduced skew
     } else if (x > width / 2 && y > height / 2) {
-        translateX = 0.05; // Reduced translation
-        translateY = 0.05; // Reduced translation
+        translateX = 0.1; // Further reduced translation
+        translateY = 0.1; // Further reduced translation
         skewY = 3; // Reduced skew
-        skewX = -2; // Reduced skew
+        skewX = -1; // Reduced skew
     } else if (x > width / 2 && y < height / 2) {
-        translateX = 0.05; // Reduced translation
-        translateY = -0.05; // Reduced translation
+        translateX = 0.1; // Further reduced translation
+        translateY = -0.1; // Further reduced translation
         skewY = 3; // Reduced skew
-        skewX = -2; // Reduced skew
+        skewX = -1; // Reduced skew
     } else {
-        scale = 1.1; // Slightly larger scale for clicks near the center
+        scale = 1.05; // Slightly larger scale for clicks near the center
     }
 
     image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
