@@ -92,6 +92,10 @@ image.addEventListener('click' , (e)=> {
     }
 
     image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg) scale(${scale})`;
+    
+    setTimeout(() => {
+        image.style.transform = 'translate(0px, 0px) scale(1)';
+    }, 100);
     /*
     if(x < 150 & y < 150){
         image.style.transform = 'translate(-0.25rem, -0.25rem) skewY(-10deg) skewX(5deg)';
@@ -106,11 +110,11 @@ image.addEventListener('click' , (e)=> {
         image.style.transform = 'translate(0.25rem, -0.25rem) skewY(10deg) skewX(-5deg)';
     }
 
-*/
+
     setTimeout(()=>{
         image.style.transform = 'translate(0px, 0px)';
     }, 100);
-
+*/
     body.querySelector('.progress').style.width = `${(100 * power) / total}%`;
 });
 
