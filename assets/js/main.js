@@ -38,7 +38,7 @@ function showAddedCount(x, y, amount) {
     indicator.style.fontWeight = 'bold';
     indicator.style.pointerEvents = 'none';
     indicator.style.opacity = '1';
-    indicator.style.transition = 'opacity 2s, transform 2s';
+    indicator.style.transition = 'opacity 1s, transform 2s';
     indicator.style.transform = 'translateY(0)';
 
     body.appendChild(indicator);
