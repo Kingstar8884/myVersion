@@ -40,7 +40,8 @@ image.addEventListener('click' , (e)=> {
     let y = e.offsetY;
 
 
-    if (navigator.vibrate) {
+    if (window.navigator.vibrate) {
+        window.navigator.vibrate(200);
         alert("Clicked");
     }
 
