@@ -41,7 +41,9 @@ alert("Clicked");
     let y = e.offsetY;
 
 
-    navigator.vibrate(5);
+    if (navigator.vibrate) {
+      navigator.vibrate(5);
+    }
 
     coins = localStorage.getItem('coins');
     power = localStorage.getItem('power');
