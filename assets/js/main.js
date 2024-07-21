@@ -33,8 +33,8 @@ function showAddedCount(x, y, amount) {
     indicator.style.position = 'absolute';
     indicator.style.left = `${x}px`;
     indicator.style.top = `${y}px`;
-    indicator.style.fontSize = '1rem';
-    indicator.style.color = 'green';
+    indicator.style.fontSize = '3rem';
+    indicator.style.color = 'white';
     indicator.style.fontWeight = 'bold';
     indicator.style.pointerEvents = 'none';
     indicator.style.opacity = '1';
