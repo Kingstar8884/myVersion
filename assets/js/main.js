@@ -36,13 +36,12 @@ if(count == null){
 
 image.addEventListener('click' , (e)=> {
 
-    let x = e.offsetX;
-    let y = e.offsetY;
+    //let x = e.offsetX;
+    //let y = e.offsetY;
 
 
-    if (window.navigator.vibrate) {
-        window.navigator.vibrate(200);
-        alert("Clicked");
+    if (navigator.vibrate) {
+        navigator.vibrate(200);
     }
 
     coins = localStorage.getItem('coins');
@@ -55,7 +54,42 @@ image.addEventListener('click' , (e)=> {
         localStorage.setItem('power' , `${Number(power) - 1}`);
         body.querySelector('#power').textContent = `${Number(power) - 1}`;
     } 
+    //
+    let x = e.offsetX;
+    let y = e.offsetY;
+    let width = image.offsetWidth;
+    let height = image.offsetHeight;
 
+    let translateX = 0;
+    let translateY = 0;
+    let skewX = 0;
+    let skewY = 0;
+
+    // Determine the transformation based on the click position
+    if (x < width / 2 && y < height / 2) {
+        translateX = -0.25;
+        translateY = -0.25;
+        skewY = -10;
+        skewX = 5;
+    } else if (x < width / 2 && y > height / 2) {
+        translateX = -0.25;
+        translateY = 0.25;
+        skewY = -10;
+        skewX = 5;
+    } else if (x > width / 2 && y > height / 2) {
+        translateX = 0.25;
+        translateY = 0.25;
+        skewY = 10;
+        skewX = -5;
+    } else if (x > width / 2 && y < height / 2) {
+        translateX = 0.25;
+        translateY = -0.25;
+        skewY = 10;
+        skewX = -5;
+    }
+
+    image.style.transform = `translate(${translateX}rem, ${translateY}rem) skewY(${skewY}deg) skewX(${skewX}deg)`;
+/*
     if(x < 150 & y < 150){
         image.style.transform = 'translate(-0.25rem, -0.25rem) skewY(-10deg) skewX(5deg)';
     }
@@ -69,7 +103,7 @@ image.addEventListener('click' , (e)=> {
         image.style.transform = 'translate(0.25rem, -0.25rem) skewY(10deg) skewX(-5deg)';
     }
 
-
+*/
     setTimeout(()=>{
         image.style.transform = 'translate(0px, 0px)';
     }, 100);
